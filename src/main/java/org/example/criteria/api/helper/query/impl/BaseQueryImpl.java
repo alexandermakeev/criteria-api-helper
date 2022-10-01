@@ -1,25 +1,21 @@
 package org.example.criteria.api.helper.query.impl;
 
 import org.example.criteria.api.helper.query.BaseQuery;
-import org.example.criteria.api.helper.query.QueryPredicate;
+import org.example.criteria.api.helper.query.util.QueryPredicate;
 
-import javax.persistence.EntityManager;
 import javax.persistence.criteria.CommonAbstractCriteria;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.metamodel.SingularAttribute;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
-public abstract class BaseQueryImpl<R, Q extends BaseQuery<R, Q>> implements BaseQuery<R, Q> {
-    protected final EntityManager em;
-    protected final CriteriaBuilder cb;
+public abstract class BaseQueryImpl<R, Q extends BaseQueryImpl<R, Q>> implements BaseQuery<R, Q> {
     protected final Collection<QueryPredicate<R>> predicates;
 
-    public BaseQueryImpl(EntityManager em) {
-        this.em = em;
-        this.cb = em.getCriteriaBuilder();
+    public BaseQueryImpl() {
         this.predicates = new ArrayList<>();
     }
 
@@ -159,6 +155,100 @@ public abstract class BaseQueryImpl<R, Q extends BaseQuery<R, Q>> implements Bas
                                SingularAttribute<P2, P3> attribute3, SingularAttribute<P3, String> attribute4,
                                String value) {
         predicates.add((criteria, cb, root) -> cb.like(root.get(attribute1).get(attribute2).get(attribute3).get(attribute4), "%" + value + "%"));
+        return self();
+    }
+
+    @SafeVarargs
+    @Override
+    public final Q and(QueryPart<R>... partQueries) {
+        predicates.add((criteria, cb, root) -> {
+            Predicate[] predicates = Arrays.stream(partQueries)
+                    .map(partQuery -> cb.and(buildPredicates(criteria, partQuery.predicates, cb, root)))
+                    .toArray(Predicate[]::new);
+            return cb.and(predicates);
+        });
+        return self();
+    }
+
+    @SafeVarargs
+    @Override
+    public final <P> Q and(SingularAttribute<R, P> attribute, QueryPart<P>... partQueries) {
+        predicates.add((criteria, cb, root) -> {
+            Predicate[] predicates = Arrays.stream(partQueries)
+                    .map(partQuery -> cb.and(buildPredicates(criteria, partQuery.predicates, cb, root.get(attribute))))
+                    .toArray(Predicate[]::new);
+            return cb.and(predicates);
+        });
+        return self();
+    }
+
+    @SafeVarargs
+    @Override
+    public final <P1, P2> Q and(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2, QueryPart<P2>... partQueries) {
+        predicates.add((criteria, cb, root) -> {
+            Predicate[] predicates = Arrays.stream(partQueries)
+                    .map(partQuery -> cb.and(buildPredicates(criteria, partQuery.predicates, cb, root.get(attribute1).get(attribute2))))
+                    .toArray(Predicate[]::new);
+            return cb.and(predicates);
+        });
+        return self();
+    }
+
+    @SafeVarargs
+    @Override
+    public final <P1, P2, P3> Q and(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2, SingularAttribute<P2, P3> attribute3, QueryPart<P3>... partQueries) {
+        predicates.add((criteria, cb, root) -> {
+            Predicate[] predicates = Arrays.stream(partQueries)
+                    .map(partQuery -> cb.and(buildPredicates(criteria, partQuery.predicates, cb, root.get(attribute1).get(attribute2).get(attribute3))))
+                    .toArray(Predicate[]::new);
+            return cb.and(predicates);
+        });
+        return self();
+    }
+
+    @SafeVarargs
+    @Override
+    public final Q or(QueryPart<R>... partQueries) {
+        predicates.add((criteria, cb, root) -> {
+            Predicate[] predicates = Arrays.stream(partQueries)
+                    .map(partQuery -> cb.or(buildPredicates(criteria, partQuery.predicates, cb, root)))
+                    .toArray(Predicate[]::new);
+            return cb.or(predicates);
+        });
+        return self();
+    }
+
+    @SafeVarargs
+    @Override
+    public final <P> Q or(SingularAttribute<R, P> attribute, QueryPart<P>... partQueries) {
+        predicates.add((criteria, cb, root) -> {
+            Predicate[] predicates = Arrays.stream(partQueries)
+                    .map(partQuery -> cb.or(buildPredicates(criteria, partQuery.predicates, cb, root.get(attribute)))).toArray(Predicate[]::new);
+            return cb.or(predicates);
+        });
+        return self();
+    }
+
+    @SafeVarargs
+    @Override
+    public final <P1, P2> Q or(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2, QueryPart<P2>... partQueries) {
+        predicates.add((criteria, cb, root) -> {
+            Predicate[] predicates = Arrays.stream(partQueries)
+                    .map(partQuery -> cb.or(buildPredicates(criteria, partQuery.predicates, cb, root.get(attribute1).get(attribute2)))).toArray(Predicate[]::new);
+            return cb.or(predicates);
+        });
+        return self();
+    }
+
+    @SafeVarargs
+    @Override
+    public final <P1, P2, P3> Q or(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                                   SingularAttribute<P2, P3> attribute3, QueryPart<P3>... partQueries) {
+        predicates.add((criteria, cb, root) -> {
+            Predicate[] predicates = Arrays.stream(partQueries)
+                    .map(partQuery -> cb.or(buildPredicates(criteria, partQuery.predicates, cb, root.get(attribute1).get(attribute2).get(attribute3)))).toArray(Predicate[]::new);
+            return cb.or(predicates);
+        });
         return self();
     }
 

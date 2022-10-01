@@ -1,7 +1,7 @@
 package org.example.criteria.api.helper.query.impl;
 
 import org.example.criteria.api.helper.query.SelectQuery;
-import org.example.criteria.api.helper.query.Sort;
+import org.example.criteria.api.helper.query.util.Order;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -13,58 +13,61 @@ import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class SelectQueryImpl<R> extends BaseQueryImpl<R, SelectQuery<R>> implements SelectQuery<R> {
+public class SelectQueryImpl<R> extends BaseQueryImpl<R, SelectQueryImpl<R>> implements SelectQuery<R, SelectQueryImpl<R>> {
+    private final EntityManager em;
+    private final CriteriaBuilder cb;
     private final CriteriaQuery query;
     private final Root<R> root;
-    private final List<Order> orderList;
+    private final List<javax.persistence.criteria.Order> orderList;
 
     public SelectQueryImpl(EntityManager em, Class<R> type) {
-        super(em);
+        this.em = em;
+        this.cb = em.getCriteriaBuilder();
         this.query = cb.createQuery();
         this.root = query.from(type);
         this.orderList = new ArrayList<>();
     }
 
     @Override
-    public <P> SelectQuery<R> sort(SingularAttribute<R, P> attribute) {
-        return sort(attribute, Sort.ASC);
+    public <P> SelectQueryImpl<R> order(SingularAttribute<R, P> attribute) {
+        return order(attribute, Order.ASC);
     }
 
     @Override
-    public <P> SelectQuery<R> sort(SingularAttribute<R, P> attribute, Sort sort) {
-        Order order = sort == Sort.ASC ? cb.asc(root.get(attribute)) : cb.desc(root.get(attribute));
+    public <P> SelectQueryImpl<R> order(SingularAttribute<R, P> attribute, Order sort) {
+        javax.persistence.criteria.Order order = sort == Order.ASC ? cb.asc(root.get(attribute)) : cb.desc(root.get(attribute));
         orderList.add(order);
         return this;
     }
 
     @Override
-    public <P1, P2> SelectQuery<R> sort(SingularAttribute<R, P1> attribute1,
-                                        SingularAttribute<P1, P2> attribute2) {
-        return sort(attribute1, attribute2, Sort.ASC);
+    public <P1, P2> SelectQueryImpl<R> order(SingularAttribute<R, P1> attribute1,
+                                             SingularAttribute<P1, P2> attribute2) {
+        return order(attribute1, attribute2, Order.ASC);
     }
 
     @Override
-    public <P1, P2> SelectQuery<R> sort(SingularAttribute<R, P1> attribute1,
-                                        SingularAttribute<P1, P2> attribute2, Sort sort) {
+    public <P1, P2> SelectQueryImpl<R> order(SingularAttribute<R, P1> attribute1,
+                                             SingularAttribute<P1, P2> attribute2, Order sort) {
         Path<P2> path = root.get(attribute1).get(attribute2);
-        Order order = sort == Sort.ASC ? cb.asc(path) : cb.desc(path);
+        javax.persistence.criteria.Order order = sort == Order.ASC ? cb.asc(path) : cb.desc(path);
         orderList.add(order);
         return this;
     }
 
     @Override
-    public <P1, P2, P3> SelectQuery<R> sort(SingularAttribute<R, P1> attribute1,
-                                            SingularAttribute<P1, P2> attribute2,
-                                            SingularAttribute<P2, P3> attribute3) {
-        return sort(attribute1, attribute2, attribute3, Sort.ASC);
+    public <P1, P2, P3> SelectQueryImpl<R> order(SingularAttribute<R, P1> attribute1,
+                                                 SingularAttribute<P1, P2> attribute2,
+                                                 SingularAttribute<P2, P3> attribute3) {
+        return order(attribute1, attribute2, attribute3, Order.ASC);
     }
 
     @Override
-    public <P1, P2, P3> SelectQuery<R> sort(SingularAttribute<R, P1> attribute1,
-                                            SingularAttribute<P1, P2> attribute2,
-                                            SingularAttribute<P2, P3> attribute3, Sort sort) {
+    public <P1, P2, P3> SelectQueryImpl<R> order(SingularAttribute<R, P1> attribute1,
+                                                 SingularAttribute<P1, P2> attribute2,
+                                                 SingularAttribute<P2, P3> attribute3, Order sort) {
         Path<P3> path = root.get(attribute1).get(attribute2).get(attribute3);
-        Order order = sort == Sort.ASC ? cb.asc(path) : cb.desc(path);
+        javax.persistence.criteria.Order order = sort == Order.ASC ? cb.asc(path) : cb.desc(path);
         orderList.add(order);
         return this;
     }
