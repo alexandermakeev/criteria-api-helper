@@ -1,4 +1,4 @@
-package org.example.criteria.api.helper.query;
+package org.example.criteria.api.helper.query.util;
 
 import javax.persistence.criteria.CommonAbstractCriteria;
 import javax.persistence.criteria.CriteriaBuilder;

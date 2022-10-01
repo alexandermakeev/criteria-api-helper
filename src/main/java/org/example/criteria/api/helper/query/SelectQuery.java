@@ -1,27 +1,29 @@
 package org.example.criteria.api.helper.query;
 
+import org.example.criteria.api.helper.query.util.Order;
+
 import javax.persistence.metamodel.SingularAttribute;
 import java.util.List;
 import java.util.Optional;
 
-public interface SelectQuery<R> extends BaseQuery<R, SelectQuery<R>> {
-    <P> SelectQuery<R> sort(SingularAttribute<R, P> attribute);
+public interface SelectQuery<R, Q extends SelectQuery<R, Q>> extends BaseQuery<R, Q> {
+    <P> SelectQuery<R, Q> order(SingularAttribute<R, P> attribute);
 
-    <P> SelectQuery<R> sort(SingularAttribute<R, P> attribute, Sort sort);
+    <P> SelectQuery<R, Q> order(SingularAttribute<R, P> attribute, Order order);
 
-    <P1, P2> SelectQuery<R> sort(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2);
+    <P1, P2> SelectQuery<R, Q> order(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2);
 
-    <P1, P2> SelectQuery<R> sort(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2, Sort sort);
+    <P1, P2> SelectQuery<R, Q> order(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2, Order order);
 
-    <P1, P2, P3> SelectQuery<R> sort(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2, SingularAttribute<P2, P3> attribute3);
+    <P1, P2, P3> SelectQuery<R, Q> order(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2, SingularAttribute<P2, P3> attribute3);
 
-    <P1, P2, P3> SelectQuery<R> sort(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2, SingularAttribute<P2, P3> attribute3, Sort sort);
+    <P1, P2, P3> SelectQuery<R, Q> order(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2, SingularAttribute<P2, P3> attribute3, Order order);
 
-    <P> SelectQuery<R> fetch(SingularAttribute<R, P> attribute);
+    <P> SelectQuery<R, Q> fetch(SingularAttribute<R, P> attribute);
 
-    <P1, P2> SelectQuery<R> fetch(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2);
+    <P1, P2> SelectQuery<R, Q> fetch(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2);
 
-    <P1, P2, P3> SelectQuery<R> fetch(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2, SingularAttribute<P2, P3> attribute3);
+    <P1, P2, P3> SelectQuery<R, Q> fetch(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2, SingularAttribute<P2, P3> attribute3);
 
     List<R> findAll();
 
