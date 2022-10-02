@@ -73,6 +73,110 @@ public abstract class BaseQueryImpl<R, Q extends BaseQueryImpl<R, Q>> implements
     }
 
     @Override
+    public Q isTrue(SingularAttribute<R, Boolean> attribute) {
+        predicates.add(((criteria, cb, root) -> cb.isTrue(root.get(attribute))));
+        return self();
+    }
+
+    @Override
+    public <P> Q isTrue(SingularAttribute<R, P> attribute1, SingularAttribute<P, Boolean> attribute2) {
+        predicates.add(((criteria, cb, root) -> cb.isTrue(root.get(attribute1).get(attribute2))));
+        return self();
+    }
+
+    @Override
+    public <P1, P2> Q isTrue(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                             SingularAttribute<P2, Boolean> attribute3) {
+        predicates.add(((criteria, cb, root) -> cb.isTrue(root.get(attribute1).get(attribute2).get(attribute3))));
+        return self();
+    }
+
+    @Override
+    public <P1, P2, P3> Q isTrue(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                                 SingularAttribute<P2, P3> attribute3, SingularAttribute<P3, Boolean> attribute4) {
+        predicates.add(((criteria, cb, root) -> cb.isTrue(root.get(attribute1).get(attribute2).get(attribute3).get(attribute4))));
+        return self();
+    }
+
+    @Override
+    public Q isFalse(SingularAttribute<R, Boolean> attribute) {
+        predicates.add(((criteria, cb, root) -> cb.isFalse(root.get(attribute))));
+        return self();
+    }
+
+    @Override
+    public <P> Q isFalse(SingularAttribute<R, P> attribute1, SingularAttribute<P, Boolean> attribute2) {
+        predicates.add(((criteria, cb, root) -> cb.isFalse(root.get(attribute1).get(attribute2))));
+        return self();
+    }
+
+    @Override
+    public <P1, P2> Q isFalse(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                              SingularAttribute<P2, Boolean> attribute3) {
+        predicates.add(((criteria, cb, root) -> cb.isFalse(root.get(attribute1).get(attribute2).get(attribute3))));
+        return self();
+    }
+
+    @Override
+    public <P1, P2, P3> Q isFalse(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                                  SingularAttribute<P2, P3> attribute3, SingularAttribute<P3, Boolean> attribute4) {
+        predicates.add(((criteria, cb, root) -> cb.isFalse(root.get(attribute1).get(attribute2).get(attribute3).get(attribute4))));
+        return self();
+    }
+
+    @Override
+    public <V> Q isNull(SingularAttribute<R, V> attribute) {
+        predicates.add(((criteria, cb, root) -> cb.isNull(root.get(attribute))));
+        return self();
+    }
+
+    @Override
+    public <P, V> Q isNull(SingularAttribute<R, P> attribute1, SingularAttribute<P, V> attribute2) {
+        predicates.add(((criteria, cb, root) -> cb.isNull(root.get(attribute1).get(attribute2))));
+        return self();
+    }
+
+    @Override
+    public <P1, P2, V> Q isNull(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                                SingularAttribute<P2, V> attribute3) {
+        predicates.add(((criteria, cb, root) -> cb.isNull(root.get(attribute1).get(attribute2).get(attribute3))));
+        return self();
+    }
+
+    @Override
+    public <P1, P2, P3, V> Q isNull(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                                    SingularAttribute<P2, P3> attribute3, SingularAttribute<P3, V> attribute4) {
+        predicates.add(((criteria, cb, root) -> cb.isNull(root.get(attribute1).get(attribute2).get(attribute3).get(attribute4))));
+        return self();
+    }
+
+    @Override
+    public <V> Q isNotNull(SingularAttribute<R, V> attribute) {
+        predicates.add(((criteria, cb, root) -> cb.isNotNull(root.get(attribute))));
+        return self();
+    }
+
+    @Override
+    public <P, V> Q isNotNull(SingularAttribute<R, P> attribute1, SingularAttribute<P, V> attribute2) {
+        predicates.add(((criteria, cb, root) -> cb.isNotNull(root.get(attribute1).get(attribute2))));
+        return self();
+    }
+
+    @Override
+    public <P1, P2, V> Q isNotNull(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                                   SingularAttribute<P2, V> attribute3) {
+        predicates.add(((criteria, cb, root) -> cb.isNotNull(root.get(attribute1).get(attribute2).get(attribute3))));
+        return self();
+    }
+
+    @Override
+    public <P1, P2, P3, V> Q isNotNull(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                                       SingularAttribute<P2, P3> attribute3, SingularAttribute<P3, V> attribute4) {
+        predicates.add(((criteria, cb, root) -> cb.isNotNull(root.get(attribute1).get(attribute2).get(attribute3).get(attribute4))));
+        return self();
+    }
+
+    @Override
     public <V extends Comparable<? super V>> Q greaterThan(SingularAttribute<R, V> attribute, V value) {
         predicates.add((criteria, cb, root) -> cb.greaterThan(root.get(attribute), value));
         return self();
