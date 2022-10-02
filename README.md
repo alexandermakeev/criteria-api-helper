@@ -28,11 +28,20 @@ public class CriteriaApiHelperConfiguration {
 1) Select query
 ```
 List<Order> listOfOrders = criteriaApiHelper.select(Order.class)
+    .greaterThan(Order_.deliveryDate, LocalDateTime.now())
     .and(Order_.customer, Customer_.address,
         like(Address_.addressLine, "11 Aleksandr Pushkin St"),
         and(Address_.city,
             equal(City_.name, "Tbilisi"),
-            equal(City_.country, "Georgia")
+            equal(City_.country, Country_.name, "Georgia")
+        ),
+        in(Address_.city, 
+            subquery(City.class)
+                .isTrue(City_.isCapital)
+                .select(),
+            subquery(Customer.class)
+                .isTrue(Customer_.isVip)
+                .select(Customer_.address, Address_.city)
         )
     )
     .findAll();
