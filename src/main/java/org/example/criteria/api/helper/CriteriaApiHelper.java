@@ -226,21 +226,21 @@ public class CriteriaApiHelper {
                 .like(attribute, value);
     }
 
-    public static <R, P> QueryPart<R> greaterThan(SingularAttribute<R, P> attribute1, SingularAttribute<P, String> attribute2,
-                                                  String value) {
+    public static <R, P> QueryPart<R> like(SingularAttribute<R, P> attribute1, SingularAttribute<P, String> attribute2,
+                                           String value) {
         return new QueryPart<R>()
                 .like(attribute1, attribute2, value);
     }
 
-    public static <R, P1, P2> QueryPart<R> greaterThan(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
-                                                       SingularAttribute<P2, String> attribute3, String value) {
+    public static <R, P1, P2> QueryPart<R> like(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                                                SingularAttribute<P2, String> attribute3, String value) {
         return new QueryPart<R>()
                 .like(attribute1, attribute2, attribute3, value);
     }
 
-    public static <R, P1, P2, P3> QueryPart<R> greaterThan(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
-                                                           SingularAttribute<P2, P3> attribute3,
-                                                           SingularAttribute<P3, String> attribute4, String value) {
+    public static <R, P1, P2, P3> QueryPart<R> like(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                                                    SingularAttribute<P2, P3> attribute3,
+                                                    SingularAttribute<P3, String> attribute4, String value) {
         return new QueryPart<R>()
                 .like(attribute1, attribute2, attribute3, attribute4, value);
     }
