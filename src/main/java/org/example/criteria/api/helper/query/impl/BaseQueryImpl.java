@@ -2,6 +2,7 @@ package org.example.criteria.api.helper.query.impl;
 
 import org.example.criteria.api.helper.query.BaseQuery;
 import org.example.criteria.api.helper.query.util.QueryPredicate;
+import org.example.criteria.api.helper.query.util.SubqueryPredicate;
 
 import javax.persistence.criteria.CommonAbstractCriteria;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -252,14 +253,70 @@ public abstract class BaseQueryImpl<R, Q extends BaseQueryImpl<R, Q>> implements
         return self();
     }
 
+    @SafeVarargs
+    @Override
+    public final Q in(SubqueryPredicate<R>... values) {
+        predicates.add((criteria, cb, root) -> cb.and(buildPredicates(criteria, values, cb, root)));
+        return self();
+    }
+
+    @Override
+    public <V> Q in(SingularAttribute<R, V> attribute, Collection<V> values) {
+        predicates.add((criteria, cb, root) -> root.get(attribute).in(values));
+        return self();
+    }
+
+    @SafeVarargs
+    @Override
+    public final <V> Q in(SingularAttribute<R, V> attribute, SubqueryPredicate<V>... values) {
+        predicates.add((criteria, cb, root) -> cb.and(buildPredicates(criteria, values, cb, root.get(attribute))));
+        return self();
+    }
+
+    @Override
+    public <P, V> Q in(SingularAttribute<R, P> attribute1, SingularAttribute<P, V> attribute2, Collection<V> values) {
+        predicates.add((criteria, cb, root) -> root.get(attribute1).get(attribute2).in(values));
+        return self();
+    }
+
+    @SafeVarargs
+    @Override
+    public final <P, V> Q in(SingularAttribute<R, P> attribute1, SingularAttribute<P, V> attribute2, SubqueryPredicate<V>... values) {
+        predicates.add((criteria, cb, root) -> cb.and(buildPredicates(criteria, values, cb, root.get(attribute1).get(attribute2))));
+        return self();
+    }
+
+    @Override
+    public <P1, P2, V> Q in(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                            SingularAttribute<P2, V> attribute3, Collection<V> values) {
+        predicates.add((criteria, cb, root) -> root.get(attribute1).get(attribute2).get(attribute3).in(values));
+        return self();
+    }
+
+    @SafeVarargs
+    @Override
+    public final <P1, P2, V> Q in(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                                  SingularAttribute<P2, V> attribute3, SubqueryPredicate<V>... values) {
+        predicates.add((criteria, cb, root) -> cb.and(buildPredicates(criteria, values, cb, root.get(attribute1).get(attribute2).get(attribute3))));
+        return self();
+    }
+
     //subclasses must override this method to return "this"
     protected abstract Q self();
 
     protected <T> Predicate[] buildPredicates(CommonAbstractCriteria criteria, Collection<QueryPredicate<T>> predicates,
-                                              CriteriaBuilder cb, Path<T> root) {
+                                              CriteriaBuilder cb, Path<T> path) {
         return predicates
                 .stream()
-                .map(t -> t.apply(criteria, cb, root))
+                .map(t -> t.apply(criteria, cb, path))
+                .toArray(Predicate[]::new);
+    }
+
+    protected <T> Predicate[] buildPredicates(CommonAbstractCriteria criteria, SubqueryPredicate<T>[] predicates,
+                                              CriteriaBuilder cb, Path<T> path) {
+        return Arrays.stream(predicates)
+                .map(t -> t.apply(criteria, cb))
+                .map(path::in)
                 .toArray(Predicate[]::new);
     }
 }

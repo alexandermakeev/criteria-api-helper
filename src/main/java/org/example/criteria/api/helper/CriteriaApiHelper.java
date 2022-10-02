@@ -1,12 +1,11 @@
 package org.example.criteria.api.helper;
 
-import org.example.criteria.api.helper.query.impl.DeleteQueryImpl;
-import org.example.criteria.api.helper.query.impl.SelectQueryImpl;
-import org.example.criteria.api.helper.query.impl.UpdateQueryImpl;
-import org.example.criteria.api.helper.query.impl.QueryPart;
+import org.example.criteria.api.helper.query.impl.*;
+import org.example.criteria.api.helper.query.util.SubqueryPredicate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.metamodel.SingularAttribute;
+import java.util.Collection;
 
 public class CriteriaApiHelper {
     private final EntityManager em;
@@ -208,5 +207,45 @@ public class CriteriaApiHelper {
                                                   SingularAttribute<P2, P3> attribute3, QueryPart<P3>... partQueries) {
         return new QueryPart<R>()
                 .or(attribute1, attribute2, attribute3, partQueries);
+    }
+
+    public static <R> SubQueryImpl<R> subquery(Class<R> type) {
+        return new SubQueryImpl<>(type);
+    }
+
+    @SafeVarargs
+    public static <R> QueryPart<R> in(SubqueryPredicate<R>... values) {
+        return new QueryPart<R>()
+                .in(values);
+    }
+
+    public static <R, V> QueryPart<R> in(SingularAttribute<R, V> attribute, Collection<V> values) {
+        return new QueryPart<R>()
+                .in(attribute, values);
+    }
+
+    @SafeVarargs
+    public static <R, V> QueryPart<R> in(SingularAttribute<R, V> attribute, SubqueryPredicate<V>... values) {
+        return new QueryPart<R>()
+                .in(attribute, values);
+    }
+
+    public static <R, P, V> QueryPart<R> in(SingularAttribute<R, P> attribute1, SingularAttribute<P, V> attribute2,
+                                            Collection<V> values) {
+        return new QueryPart<R>()
+                .in(attribute1, attribute2, values);
+    }
+
+    @SafeVarargs
+    public static <R, P, V> QueryPart<R> in(SingularAttribute<R, P> attribute1, SingularAttribute<P, V> attribute2,
+                                            SubqueryPredicate<V>... values) {
+        return new QueryPart<R>()
+                .in(attribute1, attribute2, values);
+    }
+
+    public static <R, P1, P2, V> QueryPart<R> in(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                                                 SingularAttribute<P2, V> attribute3, Collection<V> values) {
+        return new QueryPart<R>()
+                .in(attribute1, attribute2, attribute3, values);
     }
 }

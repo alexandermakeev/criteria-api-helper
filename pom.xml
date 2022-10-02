@@ -6,7 +6,7 @@
     <groupId>org.example</groupId>
     <artifactId>criteria-api-helper</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.2</version>
+    <version>0.0.3-SNAPSHOT</version>
 
     <properties>
         <java.version>11</java.version>
