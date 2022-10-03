@@ -336,4 +336,11 @@ public class CriteriaApiHelper {
         return new QueryPart<R>()
                 .in(attribute1, attribute2, attribute3, values);
     }
+
+    @SafeVarargs
+    public static <R, P1, P2, V> QueryPart<R> in(SingularAttribute<R, P1> attribute1, SingularAttribute<P1, P2> attribute2,
+                                                 SingularAttribute<P2, V> attribute3, SubqueryPredicate<V>... values) {
+        return new QueryPart<R>()
+                .in(attribute1, attribute2, attribute3, values);
+    }
 }
